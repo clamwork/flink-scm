@@ -32,11 +32,23 @@ under the License.
 		<flink.version>1.10.1</flink.version>
 		<java.version>1.8</java.version>
 		<scala.binary.version>2.11</scala.binary.version>
+		<hbase.version>1.4.3</hbase.version>
+		<hadoop.version>2.4.1</hadoop.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
 	<repositories>
+		<repository>
+			<id>aliyun-public</id>
+			<url>https://maven.aliyun.com/repository/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 		<repository>
 			<id>apache.snapshots</id>
 			<name>Apache Development Snapshot Repository</name>
@@ -48,6 +60,7 @@ under the License.
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+
 	</repositories>
 
 	<dependencies>
@@ -58,12 +71,65 @@ under the License.
 			<artifactId>flink-java</artifactId>
 			<version>${flink.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
 			<version>${flink.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-connector-kafka-0.10_${scala.binary.version}</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-table</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-table-api-java-bridge_${scala.binary.version}</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-table-api-java</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-jdbc_${scala.binary.version}</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-hbase_${scala.binary.version}</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-connectors</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.68</version>
+		</dependency>
+
+
 
 		<!-- Add connector dependencies here. They must be in the default scope (compile). -->
 
@@ -81,7 +147,7 @@ under the License.
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.7</version>
+			<version>1.7.15</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -91,6 +157,8 @@ under the License.
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
+
+
 
 	<build>
 		<plugins>
@@ -150,50 +218,5 @@ under the License.
 				</executions>
 			</plugin>
 		</plugins>
-
-		<pluginManagement>
-			<plugins>
-
-				<!-- This improves the out-of-the-box experience in Eclipse by resolving some warnings. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-shade-plugin</artifactId>
-										<versionRange>[3.1.1,)</versionRange>
-										<goals>
-											<goal>shade</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore/>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-compiler-plugin</artifactId>
-										<versionRange>[3.1,)</versionRange>
-										<goals>
-											<goal>testCompile</goal>
-											<goal>compile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore/>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 </project>
