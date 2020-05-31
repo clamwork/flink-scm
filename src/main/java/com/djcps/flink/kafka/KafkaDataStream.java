@@ -1,9 +1,6 @@
-package com.djcps.flink;
+package com.djcps.flink.kafka;
 
-import com.djcps.flink.kafka.MessageWaterEmitter;
-import com.djcps.flink.utils.DateUtils;
 import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.tuple.Tuple;
@@ -86,11 +83,20 @@ public class KafkaDataStream {
         writeProps.setProperty("bootstrap.servers", KAFKA_BROKERS);
         writeProps.setProperty("group.id", TRANSACTION_GROUP_WRITE);
 
-        keyStream.addSink(new FlinkKafkaProducer010<Tuple2<String, Long>>(TOPIC_NAME_WRITE, new SerializationSchema<Tuple2<String, Long>>() {
+        keyStream.addSink(new FlinkKafkaProducer010<Tuple2<String, Long>>(TOPIC_NAME_WRITE, new KeyedSerializationSchema<Tuple2<String, Long>>() {
             @Override
-            public byte[] serialize(Tuple2<String, Long> stringLongTuple2) {
+            public byte[] serializeKey(Tuple2<String, Long> stringLongTuple2) {
+                return new byte[128];
+            }
 
-                return new byte[0];
+            @Override
+            public byte[] serializeValue(Tuple2<String, Long> stringLongTuple2) {
+                return new byte[128];
+            }
+
+            @Override
+            public String getTargetTopic(Tuple2<String, Long> stringLongTuple2) {
+                return null;
             }
         }, writeProps));
 
