@@ -29,7 +29,7 @@ public class KafkaDeserializationSchemaTest {
         StreamExecutionEnvironment env = ExecutionEnvUtil.prepare(parameterTool);
         Properties props = buildKafkaProps(parameterTool);
 
-        FlinkKafkaConsumer011<ObjectNode> kafkaConsumer = new FlinkKafkaConsumer011<>("zhisheng",
+        FlinkKafkaConsumer011<ObjectNode> kafkaConsumer = new FlinkKafkaConsumer011<>("scm",
                 new KafkaMetricSchema(true),
                 props);
 
@@ -38,7 +38,6 @@ public class KafkaDeserializationSchemaTest {
                     @Override
                     public void flatMap(ObjectNode jsonNodes, Collector<MetricEvent> collector) throws Exception {
                         try {
-//                            System.out.println(jsonNodes);
                             MetricEvent metricEvent = JSON.parseObject(jsonNodes.get("value").asText(), MetricEvent.class);
                             collector.collect(metricEvent);
                         } catch (Exception e) {

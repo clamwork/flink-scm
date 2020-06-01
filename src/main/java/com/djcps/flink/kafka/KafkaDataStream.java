@@ -1,5 +1,6 @@
 package com.djcps.flink.kafka;
 
+import org.apache.commons.lang3.CharSet;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.typeinfo.Types;
@@ -86,12 +87,12 @@ public class KafkaDataStream {
         keyStream.addSink(new FlinkKafkaProducer010<Tuple2<String, Long>>(TOPIC_NAME_WRITE, new KeyedSerializationSchema<Tuple2<String, Long>>() {
             @Override
             public byte[] serializeKey(Tuple2<String, Long> stringLongTuple2) {
-                return new byte[128];
+                return stringLongTuple2.f0.getBytes();
             }
 
             @Override
             public byte[] serializeValue(Tuple2<String, Long> stringLongTuple2) {
-                return new byte[128];
+                return new byte[]{stringLongTuple2.f1.byteValue()};
             }
 
             @Override

@@ -3,34 +3,52 @@ package com.djcps.flink.mysql;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
+import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.List;
+import java.sql.ResultSet;
 
 /**
- * Desc: 数据批量 sink 数据到 mysql
- * @author superman
+ * @author Chengw
+ * @version 1.0.0
+ * @since 2020/6/1 10:24.
  */
 @Slf4j
-public class SinkToMySQL extends RichSinkFunction<List<PersonInfo>> {
+public class SourceToMySql extends RichSourceFunction<PersonInfo> {
+
     PreparedStatement ps;
     BasicDataSource dataSource;
     private Connection connection;
 
-    /**
-     * open() 方法中建立连接，这样不用每次 invoke 的时候都要建立连接和释放连接
-     *
-     * @param parameters
-     * @throws Exception
-     */
+    @Override
+    public void run(SourceContext<PersonInfo> sourceContext) throws Exception {
+        ResultSet resultSet = ps.executeQuery();
+        while(resultSet.next()){
+            PersonInfo personInfo = new PersonInfo();
+            personInfo.id =  resultSet.getInt(1);
+            personInfo.name = resultSet.getString(2);
+            personInfo.password = resultSet.getString(3);
+            personInfo.age = resultSet.getInt(4);
+            sourceContext.collect(personInfo);
+        }
+    }
+
+    @Override
+    public void cancel() {
+        try {
+            close();
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+    }
+
     @Override
     public void open(Configuration parameters) throws Exception {
         super.open(parameters);
         dataSource = new BasicDataSource();
         connection = getConnection(dataSource);
-        String sql = "insert into PersonInfo(id, name, password, age) values(?, ?, ?, ?);";
+        String sql = "select id,name,password,age from PersonInfo;";
         if (connection != null) {
             ps = this.connection.prepareStatement(sql);
         }
@@ -47,31 +65,6 @@ public class SinkToMySQL extends RichSinkFunction<List<PersonInfo>> {
             ps.close();
         }
     }
-
-    /**
-     * 每条数据的插入都要调用一次 invoke() 方法
-     *
-     * @param value
-     * @param context
-     * @throws Exception
-     */
-    @Override
-    public void invoke(List<PersonInfo> value, Context context) throws Exception {
-        if (ps == null) {
-            return;
-        }
-        //遍历数据集合
-        for (PersonInfo personInfo : value) {
-            ps.setInt(1, personInfo.getId());
-            ps.setString(2, personInfo.getName());
-            ps.setString(3, personInfo.getPassword());
-            ps.setInt(4, personInfo.getAge());
-            ps.addBatch();
-        }
-        int[] count = ps.executeBatch();//批量后执行
-        log.info("成功了插入了 {} 行数据", count.length);
-    }
-
 
     private static Connection getConnection(BasicDataSource dataSource) {
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");

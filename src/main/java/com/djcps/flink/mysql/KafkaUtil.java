@@ -30,13 +30,13 @@ public class KafkaUtil {
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         KafkaProducer producer = new KafkaProducer<String, String>(props);
 
-        for (int i = 1; i <= 100; i++) {
-            PersonInfo personInfo = new PersonInfo(i, "test" + i, "password" + i, 18 + i);
+        for (int i = 1; i <= 100000; i++) {
+            PersonInfo personInfo = new PersonInfo(i, "test" + i, "password" + i, (18 + i)/ 40);
             ProducerRecord record = new ProducerRecord<String, String>(topic, null, null, GsonUtil.toJson(personInfo));
             producer.send(record);
-            LOGGER.debug("发送数据: " + GsonUtil.toJson(personInfo));
+            LOGGER.info("发送数据: " + GsonUtil.toJson(personInfo));
             //发送一条数据 sleep 10s，相当于 1 分钟 6 条
-            Thread.sleep(10 * 1000);
+            Thread.sleep(10 * 10);
         }
         producer.flush();
     }

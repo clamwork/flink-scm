@@ -25,7 +25,7 @@ public class FlinkKafkaConsumerTest1 {
         Properties props = buildKafkaProps(parameterTool);
         //kafka topic list
         List<String> topics = Arrays.asList(parameterTool.get("metrics.topic"), parameterTool.get("logs.topic"));
-        FlinkKafkaConsumer011<MetricEvent> consumer = new FlinkKafkaConsumer011(topics, new MetricSchema(), props);
+        FlinkKafkaConsumer011<MetricEvent> consumer = new FlinkKafkaConsumer011<>(topics, new MetricSchema(), props);
         //kafka topic Pattern
         //FlinkKafkaConsumer011<MetricEvent> consumer = new FlinkKafkaConsumer011<>(java.utils.regex.Pattern.compile("test-topic-[0-9]"), new MetricSchema(), props);
 

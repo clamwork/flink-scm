@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * Desc:
  * Created by cw on 2019-02-17
@@ -13,8 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonInfo {
-    public int id;
+    public Integer id;
     public String name;
     public String password;
-    public int age;
+    public Integer age;
 }

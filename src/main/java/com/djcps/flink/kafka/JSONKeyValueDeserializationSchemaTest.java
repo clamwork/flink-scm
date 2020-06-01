@@ -20,7 +20,7 @@ public class JSONKeyValueDeserializationSchemaTest {
         StreamExecutionEnvironment env = ExecutionEnvUtil.prepare(parameterTool);
         Properties props = buildKafkaProps(parameterTool);
 
-        FlinkKafkaConsumer011<ObjectNode> kafkaConsumer = new FlinkKafkaConsumer011<>("zhisheng",
+        FlinkKafkaConsumer011<ObjectNode> kafkaConsumer = new FlinkKafkaConsumer011<>("scm",
                 new JSONKeyValueDeserializationSchema(true), //可以控制是否需要元数据字段
                 props);
 

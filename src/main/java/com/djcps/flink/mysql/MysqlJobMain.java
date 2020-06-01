@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.java.utils.ParameterTool;
+import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.windowing.AllWindowFunction;
@@ -33,13 +34,13 @@ public class MysqlJobMain {
         Properties props = KafkaConfigUtil.buildKafkaProps(parameterTool);
 
         SingleOutputStreamOperator<PersonInfo> infoStream = env.addSource(new FlinkKafkaConsumer011<>(
-                parameterTool.get("person"),   //这个 kafka topic 需要和上面的工具类的 topic 一致
+                "person",   //这个 kafka topic 需要和上面的工具类的 topic 一致
                 new SimpleStringSchema(),
                 props)).setParallelism(parameterTool.getInt(STREAM_PARALLELISM, 1))
                 .map(string -> GsonUtil.fromJson(string, PersonInfo.class)).setParallelism(4); //解析字符串成 student 对象
 
         //timeWindowAll 并行度只能为 1
-        infoStream.timeWindowAll(Time.minutes(1)).apply(new AllWindowFunction<PersonInfo, List<PersonInfo>, TimeWindow>() {
+        DataStreamSink<List<PersonInfo>> listDataStreamSink = infoStream.timeWindowAll(Time.seconds(20)).apply(new AllWindowFunction<PersonInfo, List<PersonInfo>, TimeWindow>() {
             @Override
             public void apply(TimeWindow window, Iterable<PersonInfo> values, Collector<List<PersonInfo>> out) throws Exception {
                 ArrayList<PersonInfo> personInfos = Lists.newArrayList(values);

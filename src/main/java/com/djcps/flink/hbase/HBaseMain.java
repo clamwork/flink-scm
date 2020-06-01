@@ -33,7 +33,7 @@ import static com.djcps.flink.common.constant.PropertiesConstants.METRICS_TOPIC;
 @Slf4j
 public class HBaseMain {
     //表名
-    private static TableName HBASE_TABLE_NAME = TableName.valueOf("zhisheng_stream");
+    private static TableName HBASE_TABLE_NAME = TableName.valueOf("scm_stream");
     //列族
     private static final String INFO_STREAM = "info_stream";
     //列名

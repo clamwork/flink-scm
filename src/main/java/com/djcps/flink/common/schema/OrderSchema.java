@@ -8,6 +8,7 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * order Schema ，支持序列化和反序列化
@@ -31,7 +32,7 @@ public class OrderSchema implements DeserializationSchema<OrderEvent>, Serializa
 
     @Override
     public byte[] serialize(OrderEvent orderEvent) {
-        return gson.toJson(orderEvent).getBytes(Charset.forName("UTF-8"));
+        return gson.toJson(orderEvent).getBytes(StandardCharsets.UTF_8);
     }
 
     @Override

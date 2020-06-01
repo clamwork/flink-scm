@@ -8,6 +8,7 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * User Schema ，支持序列化和反序列化
@@ -28,7 +29,7 @@ public class UserSchema implements DeserializationSchema<UserEvent>, Serializati
 
     @Override
     public byte[] serialize(UserEvent userEvent) {
-        return gson.toJson(userEvent).getBytes(Charset.forName("UTF-8"));
+        return gson.toJson(userEvent).getBytes(StandardCharsets.UTF_8);
     }
 
     @Override
